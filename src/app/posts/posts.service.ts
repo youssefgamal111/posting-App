@@ -11,7 +11,14 @@ export class PostsService {
   private postsUpdated = new Subject<Post[]>();
 
   constructor(private http: HttpClient) {}
-
+  deletePost(id:string){
+    this.http.delete<{message:string}>("http://localhost:3000/api/posts/"+id)
+    .subscribe(res=>{
+      console.log(res);
+      this.posts=this.posts.filter(p=>p.id!==id);
+      this.postsUpdated.next([...this.posts]);}
+    );
+  }
   getPosts() {
     this.http
     .get<{ message: string; posts: any }>(
