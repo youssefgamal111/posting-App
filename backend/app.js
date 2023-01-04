@@ -26,10 +26,13 @@ app.use((req, res, next) => {
 app.post("/api/posts", (req, res, next) => {
   const post = new Post({title:req.body.title,content:req.body.content});
   console.log(post);
-  post.save();
-  res.status(201).json({
-    message: 'Post added successfully'
-  });
+  post.save().then(result=>{
+    res.status(201).json({
+      message: 'Post added successfully',
+      id:result._id
+    });
+  })
+
 });
 app.delete("/api/posts/:id",(req,res)=>{
   const id=req.params.id;
