@@ -31,7 +31,15 @@ app.post("/api/posts", (req, res, next) => {
     message: 'Post added successfully'
   });
 });
-
+app.delete("/api/posts/:id",(req,res)=>{
+  const id=req.params.id;
+    Post.deleteOne({_id:id}).then(result=>{
+      console.log(result);
+      res
+      .status(204)
+      .json({message:"Post deleted"});
+    })
+});
 app.get("/api/posts", (req, res, next) => {
   Post.find().
   then(documents=>{
