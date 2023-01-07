@@ -15,6 +15,7 @@ export class PostCreateComponent implements OnInit {
   enteredContent = "";
   post:Post;
    id?:string;
+   loaded:boolean=true;
   constructor(public postsService: PostsService,public route:ActivatedRoute) { this.post = {
     id: "",
     title:"",
@@ -25,8 +26,13 @@ export class PostCreateComponent implements OnInit {
       if(paramMap.has('id'))
        {
         this.id=paramMap.get('id')!;
+        this.loaded=false;
         this.postsService.getPostById(this.id)
-        .subscribe(b=>this.post=b.post);
+        .subscribe(b=>
+          {this.loaded=true;
+            this.post=b.post;
+          }
+        )
       }
       else
       {this.id="";}
@@ -38,6 +44,7 @@ export class PostCreateComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+    this.loaded=false;
     if(this.id!==""){
      this.postsService.updatepost({
       id:this.id,
