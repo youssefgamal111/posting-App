@@ -7,7 +7,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 const routes:Routes=[
   {path:"create",component:PostCreateComponent},
-  {path:"",component:PostListComponent}
+  {path:"",component:PostListComponent},
+  {path:"edit/:id",component:PostCreateComponent}
 ]
 
 

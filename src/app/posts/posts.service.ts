@@ -11,10 +11,9 @@ export class PostsService {
   private postsUpdated = new Subject<Post[]>();
 
   constructor(private http: HttpClient) {}
-  deletePost(id:string){
+  deletePost(id?:string){
     this.http.delete<{message:string}>("http://localhost:3000/api/posts/"+id)
     .subscribe(res=>{
-      console.log(res);
       this.posts=this.posts.filter(p=>p.id!==id);
       this.postsUpdated.next([...this.posts]);}
     );
@@ -45,16 +44,29 @@ export class PostsService {
   getPostUpdateListener() {
     return this.postsUpdated.asObservable();
   }
-
+  getPostById(id:string){
+     return this.http.get<{message:string,post:Post}>("http://localhost:3000/api/posts/"+id);  }
   addPost(title: string, content: string) {
     const post: Post = { id: "jh", title: title, content: content };
     this.http
       .post<{ message: string,id:string }>("http://localhost:3000/api/posts", post)
       .subscribe(responseData => {
-        console.log(responseData.message);
         post.id=responseData.id;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
       });
+  }
+  updatepost(post:Post){
+    console.log(post);
+    this.http
+    .put<{message:string}>("http://localhost:3000/api/posts/"+post.id, post)
+    .subscribe(result=>{
+      const updatedPost=this.posts;
+      const index=updatedPost.findIndex(p=>p.id==post.id);
+      updatedPost[index]=post;
+      this.posts=updatedPost;
+      this.postsUpdated.next([...this.posts]);
+    });
+
   }
 }
