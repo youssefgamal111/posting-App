@@ -1,5 +1,5 @@
 const express=require("express");
-const router=express.router();
+const router=express.Router();
 const Post=require("../models/post");
 
 router.put("/:id",(req,res)=>{
@@ -58,5 +58,5 @@ router.put("/:id",(req,res)=>{
       });
       
     });
-    
+
     module.exports=router;
