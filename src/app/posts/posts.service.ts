@@ -14,13 +14,7 @@ export class PostsService {
 
   constructor(private http: HttpClient,private router:Router) {}
   deletePost(id?:string){
-    this.http.delete<{message:string}>("http://localhost:3000/api/posts/"+id)
-    .subscribe(res=>{
-      this.posts=this.posts.filter(p=>p.id!==id);
-      this.postCount-=1;
-      this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
-    }
-    );
+   return this.http.delete<{message:string}>("http://localhost:3000/api/posts/"+id);
   }
   getPosts(pageSize:number,currentPage:number) {
     const reqQuery=`?pagesize=${pageSize}&currentpage=${currentPage}`
