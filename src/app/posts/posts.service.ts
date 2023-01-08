@@ -62,16 +62,6 @@ export class PostsService {
     this.http
       .post<{ message: string,post:Post }>("http://localhost:3000/api/posts", postdata)
       .subscribe(responseData => {
-        const post={
-          id:responseData.post.id,
-          title:title,
-          content:content,
-          imagepath:responseData.post.imagepath
-
-        }
-        this.posts.push(post);
-        this.postCount+=1;
-        this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
         this.router.navigate(["/"]);
       });
   }
@@ -92,12 +82,6 @@ export class PostsService {
     this.http
     .put<{message:string,imagepath:string}>("http://localhost:3000/api/posts/"+post.id, newPost)
     .subscribe(result=>{
-      const updatedPost=this.posts;
-      const index=updatedPost.findIndex(p=>p.id==post.id);
-      updatedPost[index]=post;
-      updatedPost[index].imagepath=result.imagepath as string;
-      this.posts=updatedPost;
-      this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
       this.router.navigate(["/"]);
 
     });
