@@ -1,27 +1,66 @@
 const express=require("express");
 const router=express.Router();
 const Post=require("../models/post");
+const multer=require("multer");
 
-router.put("/:id",(req,res)=>{
-    const post=new Post({
-      _id:req.body.id,
-      title:req.body.title,
-      content:req.body.content
-    });
+const MIME_TYPE_MAP={
+  "image/png":"png",
+  "image/jng":"jpg",
+  "image/jpg":"jpg",
+
+}
+
+const storage=multer.diskStorage({
+  destination:(req,file,cb)=>{
+    const isvalid=MIME_TYPE_MAP[file.mimetype];
+    let error=null;
+    if(!isvalid){
+      error=new Error("Invalid mime Type");
+    }
+    cb(error,"images");//from the location of the server as route will called from server
+  },
+  filename:(req,file,cb)=>{
+    const name=file.fieldname.toLowerCase().split('').join('-');
+    const extension=MIME_TYPE_MAP[file.mimetype];
+    cb(null,name+'-'+Date.now()+'.'+extension);
+  }
+});
+
+router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
+  let ipath;
+  if(req.file){
+    //update with new file
+     ipath=req.protocol+"://"+req.get('host')+"/images/"+req.file.filename;
+
+  }
+  else{
+    ipath=req.body.imagepath;
+  }
+  const post=new Post({
+    _id:req.body.id,
+    title:req.body.title,
+    content:req.body.content,
+    imagepath:ipath
+  });
+      console.log(post);
       Post.updateOne({_id:req.params.id},post)
       .then((err,docs)=>
         res.status(200).json({
-         err:err
+         err:err,
+         imagepath:ipath
         }));
     })
 
-    router.post("", (req, res, next) => {
-      const post = new Post({title:req.body.title,content:req.body.content});
-      console.log(post);
+    router.post("",multer({storage:storage}).single("image"),(req, res, next) => {
+      const ipath=req.protocol+"://"+req.get('host')+"/images/"+req.file.filename;
+      console.log(ipath);
+      const post = new Post({title:req.body.title,content:req.body.content,imagepath:ipath});
       post.save().then(result=>{
         res.status(201).json({
           message: 'Post added successfully',
-          id:result._id
+          post:{...result,
+            id:result._id}
+         
         });
       })
     
