@@ -9,23 +9,28 @@ import { Router } from "@angular/router";
 @Injectable({ providedIn: "root" })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{postcount:number,posts:Post[]}>();
+  private postCount:number=0;
 
   constructor(private http: HttpClient,private router:Router) {}
   deletePost(id?:string){
     this.http.delete<{message:string}>("http://localhost:3000/api/posts/"+id)
     .subscribe(res=>{
       this.posts=this.posts.filter(p=>p.id!==id);
-      this.postsUpdated.next([...this.posts]);}
+      this.postCount-=1;
+      this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
+    }
     );
   }
-  getPosts() {
+  getPosts(pageSize:number,currentPage:number) {
+    const reqQuery=`?pagesize=${pageSize}&currentpage=${currentPage}`
     this.http
-    .get<{ message: string; posts: any }>(
-      "http://localhost:3000/api/posts"
+    .get<{ message: string; posts: any,postcount:string }>(
+      "http://localhost:3000/api/posts"+reqQuery
     )
     .pipe(map((postdata)=>{
-      return postdata.posts.map((post: { _id: string; title: string; content: string;imagepath:string })=>
+      return{postcount:postdata.postcount,posts:
+      postdata.posts.map((post: { _id: string; title: string; content: string;imagepath:string })=>
         {
         return{
           id:post._id,
@@ -35,11 +40,12 @@ export class PostsService {
         }
       }
       )
-
+    }
     }))
-    .subscribe(returnedposts => {
-      this.posts = returnedposts;
-      this.postsUpdated.next([...this.posts]);
+    .subscribe(result => {
+      this.posts =result.posts;
+      this.postCount=+result.postcount
+      this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
     });
   }
 
@@ -64,7 +70,8 @@ export class PostsService {
 
         }
         this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
+        this.postCount+=1;
+        this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
         this.router.navigate(["/"]);
       });
   }
@@ -90,7 +97,7 @@ export class PostsService {
       updatedPost[index]=post;
       updatedPost[index].imagepath=result.imagepath as string;
       this.posts=updatedPost;
-      this.postsUpdated.next([...this.posts]);
+      this.postsUpdated.next({postcount:this.postCount,posts:[...this.posts]});
       this.router.navigate(["/"]);
 
     });

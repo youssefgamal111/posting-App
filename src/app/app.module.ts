@@ -15,6 +15,7 @@ import { PostListComponent } from "./posts/post-list/post-list.component";
 import { AppRoutingModule } from "./app-routing.module";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import { ReactiveFormsModule } from "@angular/forms";
+import {MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,7 +35,8 @@ import { ReactiveFormsModule } from "@angular/forms";
     HttpClientModule,
     AppRoutingModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

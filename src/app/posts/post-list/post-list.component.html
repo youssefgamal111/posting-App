@@ -15,3 +15,9 @@
   </mat-expansion-panel>
 </mat-accordion>
 <p class="info-text mat-body-1" *ngIf="posts.length <= 0 && loaded">No posts added yet!</p>
+<mat-paginator [length]=postCount
+              [pageSize]=pageSize
+              [pageSizeOptions]="[1, 2, 3, 4,5]"
+              (page)="onPagChange($event)"
+              aria-label="Select page" *ngIf="posts.length > 0">
+</mat-paginator>
