@@ -2,6 +2,7 @@ const express=require("express");
 const router=express.Router();
 const Post=require("../models/post");
 const multer=require("multer");
+const authorize=require("../middlewares/checkAuthentication");
 
 const MIME_TYPE_MAP={
   "image/png":"png",
@@ -51,7 +52,7 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
         }));
     })
 
-    router.post("",multer({storage:storage}).single("image"),(req, res, next) => {
+    router.post("",authorize,multer({storage:storage}).single("image"),(req, res, next) => {
       const ipath=req.protocol+"://"+req.get('host')+"/images/"+req.file.filename;
       console.log(ipath);
       const post = new Post({title:req.body.title,content:req.body.content,imagepath:ipath});
@@ -66,7 +67,7 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
     
     });
 
-    router.delete("/:id",(req,res)=>{
+    router.delete("/:id",authorize,(req,res)=>{
       const id=req.params.id;
         Post.deleteOne({_id:id}).then(result=>{
           console.log(result);
@@ -96,7 +97,10 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
         .limit(pageSize);
       }
       postQery
-      .then(documents=>{posts=documents;return Post.count()})
+      .then(documents=>
+        {posts=documents;
+          return Post.count();//return new promise ;)
+        })
       .then(count=>{
         res.status(200).json({
           message: "Posts fetched successfully!",
