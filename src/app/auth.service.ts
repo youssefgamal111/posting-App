@@ -1,6 +1,6 @@
 import { HttpClient,  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { User } from './user.model';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { User } from './user.model';
 })
 export class AuthService {
    token:string="";
-   private isAuthenticated=new Subject<boolean>();
+   private isAuthenticated=new BehaviorSubject<boolean>(false);
   constructor(private http:HttpClient) { }
   createUser(user:User){
    this.http.post<{messsage:string,user:User}>("http://localhost:3000/api/user/signup",user).subscribe(
@@ -29,6 +29,9 @@ export class AuthService {
   isAuthenticatedObs(){
    return this.isAuthenticated.asObservable();
 
+  }
+  isAuthenticatedValue(){
+    return this.isAuthenticated.getValue();
   }
      getToken():string{
       return this.token;
