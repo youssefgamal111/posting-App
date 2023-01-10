@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { throwToolbarMixedModesError } from "@angular/material/toolbar";
+
 import { Subscription } from "rxjs";
 import { AuthService } from "../auth.service";
 
@@ -17,6 +18,7 @@ export class HeaderComponent implements OnInit,OnDestroy {
     this.authSubscribtion=this.authservice.isAuthenticatedObs().subscribe(
       res=>this.authenticated=res);
   }
+  logout(){this.authservice.logOut();}
   ngOnDestroy(): void {
   this.authSubscribtion.unsubscribe();
 

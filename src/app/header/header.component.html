@@ -9,4 +9,7 @@
     <li *ngIf="!authenticated" >
       <a mat-button routerLink="/signup">SignUp</a>
     </li>
+    <li *ngIf="authenticated" >
+      <a mat-button routerLink="/login" (click)="logout()">Logout</a>
+    </li>
   </ul></mat-toolbar>
