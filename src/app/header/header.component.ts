@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { throwToolbarMixedModesError } from "@angular/material/toolbar";
 
 import { Subscription } from "rxjs";
-import { AuthService } from "../auth.service";
+import { AuthService } from "../authentication/auth.service";
 
 @Component({
   selector: 'app-header',

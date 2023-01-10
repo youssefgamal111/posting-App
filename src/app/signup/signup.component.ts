@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { User } from '../user.model';
-import { AuthService } from '../auth.service';
+import { User } from '../authentication/user.model';
+import { AuthService } from '../authentication/auth.service';
 
 @Component({
   selector: 'app-signup',

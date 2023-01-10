@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { Subscription } from 'rxjs';
-import { AuthService } from "src/app/auth.service";
+import { AuthService } from "src/app/authentication/auth.service";
 
 import { Post } from "../post.model";
 import { PostsService } from "../posts.service";

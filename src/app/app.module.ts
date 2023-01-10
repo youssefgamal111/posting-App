@@ -18,7 +18,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
-import { authinterceptor } from "./authinterceptor";
+import { authinterceptor } from "./authentication/authinterceptor";
 @NgModule({
   declarations: [
     AppComponent,
