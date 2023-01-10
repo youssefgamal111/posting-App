@@ -1,6 +1,12 @@
-<mat-toolbar color="primary"><span><a routerLink="/">My Messages</a></span>
+<mat-toolbar color="primary"><span><a routerLink="/">MessageBook</a></span>
   <ul>
-    <li>
-      <a mat-button routerLink="/create">new post</a>
+    <li *ngIf="authenticated">
+      <a mat-button  routerLink="/create">New Post</a>
+    </li>
+    <li *ngIf="!authenticated">
+      <a mat-button routerLink="/login">Login</a>
+    </li>
+    <li *ngIf="!authenticated" >
+      <a mat-button routerLink="/signup">SignUp</a>
     </li>
   </ul></mat-toolbar>
