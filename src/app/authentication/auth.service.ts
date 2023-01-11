@@ -9,7 +9,7 @@ import { User } from './user.model';
 })
 export class AuthService {
    token:string="";
-   expirein:number=0;
+   expirein:string="";
    tokentimer:any;
    private isAuthenticated=new BehaviorSubject<boolean>(false);
   constructor(private http:HttpClient,private router:Router) { }
@@ -21,34 +21,74 @@ export class AuthService {
 
   }
   authenticateUser(user:User){
-    this.http.post<{message:string,token:string,expirein:string}>("http://localhost:3000/api/user/login",user).subscribe(
+    this.http.post<{message:string,token:string,expiresin:string}>("http://localhost:3000/api/user/login",user).subscribe(
       res=>{
       const token=res.token;
       this.token=token;
-      this.expirein=+res.expirein;
-      this.tokentimer=  setTimeout(() => {
-          this.logOut();
-          alert("session ended");
-        }, this.expirein*1000);
+      const now=new Date();
+      const expiredate=new Date(now.getTime() +(+res.expiresin *1000));
+      this.createTimer(+res.expiresin *1000);
       this.isAuthenticated.next(true);
+      this.saveAuthData(this.token,expiredate);
       this.router.navigate(["/"]);
     }
      )
   }
+
   logOut(){
   clearTimeout(this.tokentimer);
     this.token="";
     this.isAuthenticated.next(false);
   }
+
   isAuthenticatedObs(){
    return this.isAuthenticated.asObservable();
 
   }
+
   isAuthenticatedValue(){
     return this.isAuthenticated.getValue();
   }
-     getToken():string{
+
+  getToken():string{
       return this.token;
      }
+
+  saveAuthData(token:string,expirein:Date){
+    localStorage.setItem("token",token);
+    localStorage.setItem("expirein",expirein.toISOString());
+
+  }
+
+  clearAuthData(){
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirein");
+
+  }
+
+  getAuthData(){
+    const token=localStorage.getItem("token");
+    const expirein=localStorage.getItem("expirein");
+    if(token && expirein){
+      return{token:token,expirein:new Date(expirein)}
+    }
+    return;
+  }
+  autoAuthUser(){
+   const authInfo= this.getAuthData();
+   if(authInfo==null)return;
+   const now=new Date();
+   if(authInfo!.expirein > now){
+    this.token=authInfo!.token;
+    this.isAuthenticated.next(true);
+    this.createTimer(now.getTime()-authInfo!.expirein.getTime());
+  }
+  }
+
+  createTimer(expiredate:number){
+    this.tokentimer=setTimeout(() => {
+      this.logOut();
+    }, expiredate);
+  }
 
 }
