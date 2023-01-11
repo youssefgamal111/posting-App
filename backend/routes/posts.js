@@ -54,8 +54,9 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
 
     router.post("",authorize,multer({storage:storage}).single("image"),(req, res, next) => {
       const ipath=req.protocol+"://"+req.get('host')+"/images/"+req.file.filename;
-      console.log(ipath);
-      const post = new Post({title:req.body.title,content:req.body.content,imagepath:ipath});
+      
+      const post = new Post({title:req.body.title,content:req.body.content,
+        imagepath:ipath,creator:req.userdata.id});
       post.save().then(result=>{
         res.status(201).json({
           message: 'Post added successfully',
