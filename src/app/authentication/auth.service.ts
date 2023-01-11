@@ -37,6 +37,7 @@ export class AuthService {
 
   logOut(){
   clearTimeout(this.tokentimer);
+  this.clearAuthData();
     this.token="";
     this.isAuthenticated.next(false);
   }
@@ -81,13 +82,13 @@ export class AuthService {
    if(authInfo!.expirein > now){
     this.token=authInfo!.token;
     this.isAuthenticated.next(true);
-    this.createTimer(now.getTime()-authInfo!.expirein.getTime());
+    this.createTimer(authInfo!.expirein.getTime()-now.getTime());
   }
   }
 
   createTimer(expiredate:number){
     this.tokentimer=setTimeout(() => {
-      this.logOut();
+     this.logOut();
     }, expiredate);
   }
 
