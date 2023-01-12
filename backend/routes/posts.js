@@ -3,6 +3,7 @@ const router=express.Router();
 const Post=require("../models/post");
 const multer=require("multer");
 const authorize=require("../middlewares/checkAuthentication");
+const checkAuthentication = require("../middlewares/checkAuthentication");
 
 const MIME_TYPE_MAP={
   "image/png":"png",
@@ -27,7 +28,8 @@ const storage=multer.diskStorage({
   }
 });
 
-router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
+router.put("/:id",checkAuthentication,multer({storage:storage}).single("image"),(req,res)=>{
+
   let ipath;
   if(req.file){
     //update with new file
@@ -44,12 +46,17 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
     imagepath:ipath
   });
       console.log(post);
-      Post.updateOne({_id:req.params.id},post)
-      .then((err,docs)=>
+      Post.updateOne({_id:req.params.id,creator:req.userdata.id},post)
+      .then(result=>{
+        if(result.modifiedCount===0){
+          return res.status(401).json({
+            message:"user are not authorized to edit this post"
+           });
+        }
         res.status(200).json({
-         err:err,
          imagepath:ipath
-        }));
+        });
+      });
     })
 
     router.post("",authorize,multer({storage:storage}).single("image"),(req, res, next) => {
@@ -70,11 +77,17 @@ router.put("/:id",multer({storage:storage}).single("image"),(req,res)=>{
 
     router.delete("/:id",authorize,(req,res)=>{
       const id=req.params.id;
-        Post.deleteOne({_id:id}).then(result=>{
-          console.log(result);
-          res
+        Post.deleteOne({_id:id,creator:req.userdata.id}).then(result=>{
+         if(result.deletedCount>0)
+          {res
           .status(204)
           .json({message:"Post deleted"});
+          }
+          else {
+            res
+          .status(401)
+          .json({message:"you cant not delete others posts"});
+          }
         })
     });
     router.get("/:id",(req,res)=>{

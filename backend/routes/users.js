@@ -36,7 +36,8 @@ router.post("/signup",(req,res)=>{
             if(!result2)
                 return res.status(401).json({message:"wrong email or password"});
             const token=jwt.sign({email:fetchedUser.email,id:fetchedUser._id} ,"jgbmvmgrtkjrmjtr",{expiresIn:"1h"});
-            res.status(200).json({message:"success auth",token:token,expiresin:"3600"});
+            res.status(200).json({message:"success auth",token:token,
+            expiresin:"3600",userid:fetchedUser._id});
         })
         .catch(err=>{
             return res.status(401).json({message:"auth failed"});
