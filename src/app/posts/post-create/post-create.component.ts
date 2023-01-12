@@ -3,7 +3,6 @@ import { FormControl, NgForm, Validators } from "@angular/forms";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Post } from "../post.model";
-
 import { PostsService } from "../posts.service";
 import { mimeType } from "./mime-file.validator";
 

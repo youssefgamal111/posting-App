@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../authentication/auth.service';
 import { User } from '../authentication/user.model';
 
@@ -8,18 +9,22 @@ import { User } from '../authentication/user.model';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit,OnDestroy {
   loaded:boolean=false;
   user:User | undefined;
-  constructor(private auth:AuthService){}
+  authSub!:Subscription;
+  constructor(private authservice:AuthService){}
+  ngOnDestroy(): void {
+  this.authSub.unsubscribe();  }
   ngOnInit(): void {
    this.loaded=true;
+   this.authSub=this.authservice.isAuthenticatedObs().subscribe(s=>this.loaded=true)
   }
   onLogin(form:NgForm): void{
     if(form.invalid)return;
     this.user={email:form.value.email,password:form.value.password};
     this.loaded=false;
-    this.auth.authenticateUser(this.user);
+    this.authservice.authenticateUser(this.user);
   }
 
 }

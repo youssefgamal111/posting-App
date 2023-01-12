@@ -17,10 +17,10 @@ export class AuthService {
   createUser(user:User){
    this.http
    .post<{messsage:string,user:User}>("http://localhost:3000/api/user/signup",user)
-   .subscribe( res=>
-    console.log(res)
+   .subscribe( {next:(res)=>{
+    this.router.navigate(["/"]);
+   },error:(err)=>{this.isAuthenticated.next(false);}}
    )
-   this.router.navigate(["/"]);
 
   }
   authenticateUser(user:User){
