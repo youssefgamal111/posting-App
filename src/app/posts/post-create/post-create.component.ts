@@ -23,7 +23,8 @@ export class PostCreateComponent implements OnInit {
   constructor(public postsService: PostsService,public route:ActivatedRoute) { this.post = {
     id: "",
     title:"",
-    content:""
+    content:"",
+    creator:""
   };}
   ngOnInit(): void {
     this.form=new FormGroup({
@@ -69,7 +70,8 @@ export class PostCreateComponent implements OnInit {
       id:this.id,
       title:this.form?.value.title,
       content:this.form?.value.content,
-      imagepath:this.form?.value.image
+      imagepath:this.form?.value.image,
+      creator:localStorage.getItem("userid")!
      });
     }
     else{

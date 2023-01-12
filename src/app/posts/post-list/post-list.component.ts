@@ -24,13 +24,15 @@ export class PostListComponent implements OnInit, OnDestroy {
   loaded:boolean=true;
   pageSize:number=2;
   postCount=0;
+  userid:string="";
   constructor(public postsService: PostsService,public authService:AuthService) {}
 
   ngOnInit() {
     this.loaded=false;
+    this.userid=this.authService.userid;
     this.isAuthenticated=this.authService.isAuthenticatedValue();
     this.postsService.getPosts(this.pageSize,1);
-    this.authSub=this.authService.isAuthenticatedObs().subscribe(s=>this.isAuthenticated=s)
+    this.authSub=this.authService.isAuthenticatedObs().subscribe(s=>this.isAuthenticated=s);
     this.postsSub = this.postsService.getPostUpdateListener()
       .subscribe((obj:{postcount:number,posts:Post[]}) => {
         this.loaded=true;

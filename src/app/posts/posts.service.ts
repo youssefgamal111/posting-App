@@ -23,14 +23,17 @@ export class PostsService {
       "http://localhost:3000/api/posts"+reqQuery
     )
     .pipe(map((postdata)=>{
-      return{postcount:postdata.postcount,posts:
-      postdata.posts.map((post: { _id: string; title: string; content: string;imagepath:string })=>
+      return{postcount:postdata.postcount,
+        posts:
+      postdata.posts.map(
+        (post: { _id: string; title: string; content: string;imagepath:string,creator:string })=>
         {
         return{
           id:post._id,
           title:post.title,
           content:post.content,
-          imagepath:post.imagepath
+          imagepath:post.imagepath,
+          creator:post.creator
         }
       }
       )
