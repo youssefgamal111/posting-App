@@ -3,12 +3,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const postRoutes=require("./routes/posts");
-const userRoutes=require("./routes/users")
+const userRoutes=require("./routes/users");
+require('dotenv').config();
 const mongoose=require("mongoose");
-
-mongoose.connect("mongodb+srv://youssefgamal:LR7EP4QYriDvy0cb@cluster0.5tfzpkm.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://youssefgamal:"+process.env.mongo_atlas_pass+"@cluster0.5tfzpkm.mongodb.net/?retryWrites=true&w=majority")
 .then(()=>console.log("connected successfully"))
-.catch(()=>console.log("connection to the database failed"));
+.catch(()=>console.log("connected failed"));
 
 app.use(bodyParser.json());
 
