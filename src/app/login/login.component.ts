@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit,OnDestroy {
   this.authSub.unsubscribe();  }
   ngOnInit(): void {
    this.loaded=true;
-   this.authSub=this.authservice.isAuthenticatedObs().subscribe(s=>this.loaded=true)
+   this.authSub=this.authservice.isAuthenticatedObs().subscribe(s=>this.loaded=true);
   }
   onLogin(form:NgForm): void{
     if(form.invalid)return;

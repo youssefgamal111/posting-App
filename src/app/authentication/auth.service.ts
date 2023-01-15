@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { User } from './user.model';
+import {enviroment} from'../../enviroments/enviroment'
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AuthService {
   constructor(private http:HttpClient,private router:Router) { }
   createUser(user:User){
    this.http
-   .post<{messsage:string,user:User}>("http://localhost:3000/api/user/signup",user)
+   .post<{messsage:string,user:User}>(enviroment.api_url+"/user/signup",user)
    .subscribe( {next:(res)=>{
     this.router.navigate(["/"]);
    },error:(err)=>{this.isAuthenticated.next(false);}}
@@ -24,7 +25,8 @@ export class AuthService {
 
   }
   authenticateUser(user:User){
-    this.http.post<{message:string,token:string,expiresin:string,userid:string}>("http://localhost:3000/api/user/login",user).subscribe(
+    this.http.post<{message:string,token:string,expiresin:string,userid:string}>(enviroment.api_url+"/user/login",user)
+    .subscribe({next:
       res=>{
       const token=res.token;
       this.token=token;
@@ -36,6 +38,7 @@ export class AuthService {
       this.saveAuthData(this.token,expiredate,this.userid);
       this.router.navigate(["/"]);
     }
+  ,error:(err)=>{this.isAuthenticated.next(false);}}
      )
   }
 
